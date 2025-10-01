@@ -1,44 +1,44 @@
-import express from 'express';
-import multer from 'multer';
-import path from 'path';
-import Tesseract from 'tesseract.js';
-import pdf from 'pdf-parse';
-import XLSX from 'xlsx';
-import axios from 'axios';
-import cheerio from 'cheerio';
-import fs from 'fs';
+const fs = require('fs');
+const path = require('path');
+const Tesseract = require('tesseract.js');
+const pdf = require('pdf-parse');
+const XLSX = require('xlsx');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
-const app = express();
-const upload = multer({ dest: 'uploads/' });
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-app.post('/analyze', upload.single('file'), async (req, res) => {
   let text = req.body.manifest || '';
-  const file = req.file;
+  const file = req.files && req.files.file ? req.files.file : null;
 
-  // Parse file if uploaded
+  // Parse file if uploaded (Vercel file handling)
   if (file) {
-    const fileType = path.extname(file.originalname).toLowerCase();
+    const filePath = file.filepath;
+    const fileType = path.extname(file.filename).toLowerCase();
     if (fileType === '.pdf') {
-      const dataBuffer = fs.readFileSync(file.path);
+      const dataBuffer = fs.readFileSync(filePath);
       const data = await pdf(dataBuffer);
       text += ' ' + data.text.toLowerCase();
     } else if (['.xlsx', '.xls', '.csv'].includes(fileType)) {
       let workbook;
       if (fileType === '.csv') {
-        const csvText = fs.readFileSync(file.path, 'utf8');
+        const csvText = fs.readFileSync(filePath, 'utf8');
         workbook = XLSX.read(csvText, { type: 'string' });
       } else {
-        const arrayBuffer = fs.readFileSync(file.path);
+        const arrayBuffer = fs.readFileSync(filePath);
         workbook = XLSX.read(arrayBuffer, { type: 'array' });
       }
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
       text += ' ' + json.flat().filter(cell => cell).join(' ').toLowerCase();
     } else if (fileType.match(/\.(jpg|jpeg|png|gif|bmp)$/)) {
-      const { data: { text: ocrText } } = await Tesseract.recognize(file.path, 'eng');
+      const { data: { text: ocrText } } = await Tesseract.recognize(filePath, 'eng');
       text += ' ' + ocrText.toLowerCase();
     }
-    fs.unlinkSync(file.path);
+    fs.unlinkSync(filePath);
   }
 
   // URL scrape if in text
@@ -60,7 +60,7 @@ app.post('/analyze', upload.single('file'), async (req, res) => {
   const analysis = await runFlipBotAnalysis(items, text);
 
   res.json(analysis);
-});
+};
 
 function extractItems(text) {
   const units = parseInt(text.match(/\d+ units?/i)?.[0]) || 6;
@@ -104,4 +104,4 @@ async function runFlipBotAnalysis(items, fullText) {
     'Demand Rating': `Med-High (Trends ${trendsScore}/100 rising, 50+ listings, high Oct seasonal).`,
     'Risks/Tips': `30% duds untested; List "Tested No Case—$${avgPrice}" OfferUp. Speed: 20% below market bundle, same-day meetups. Alt: Via Trading chargers $450 (100 units, data-backed 3x).`
   };
-}
+};
