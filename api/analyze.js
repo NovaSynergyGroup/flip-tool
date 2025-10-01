@@ -8,18 +8,14 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import fs from 'fs';
 
+const app = express();
 const upload = multer({ dest: 'uploads/' });
 
-export default async function (req, res) {
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
-
+app.post('/analyze', upload.single('file'), async (req, res) => {
   let text = req.body.manifest || '';
   const file = req.file;
 
-  // Parse file if uploaded (same as server.js)
+  // Parse file if uploaded
   if (file) {
     const fileType = path.extname(file.originalname).toLowerCase();
     if (fileType === '.pdf') {
@@ -59,12 +55,12 @@ export default async function (req, res) {
     }
   }
 
-  // FlipBot Analysis (same as before)
+  // FlipBot Analysis
   const items = extractItems(text);
   const analysis = await runFlipBotAnalysis(items, text);
 
   res.json(analysis);
-}
+});
 
 function extractItems(text) {
   const units = parseInt(text.match(/\d+ units?/i)?.[0]) || 6;
