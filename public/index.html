@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Analyzer - Powered by Nova Synergy Group LLC</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d4edda 0%, #f8f9fa 50%, #ffffff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: #4a5568;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        h2 { text-align: center; color: #495057; margin-bottom: 20px; font-size: 2em; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+        p { text-align: center; color: #6c757d; margin-bottom: 20px; }
+        textarea, input[type="file"] { width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px; margin: 10px 0; font-size: 14px; transition: border-color 0.3s ease; box-sizing: border-box; background: #f8f9fa; }
+        textarea:focus, input[type="file"]:focus { outline: none; border-color: #d4edda; }
+        button { width: 100%; padding: 12px; background: linear-gradient(135deg, #d4edda 0%, #f8f9fa 100%); color: #495057; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 237, 218, 0.3); }
+        #result { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #d4edda; white-space: pre-line; line-height: 1.6; color: #495057; }
+        .branding { text-align: center; margin-top: 20px; padding: 15px; background: rgba(212, 237, 218, 0.3); border-radius: 8px; font-weight: bold; color: #495057; font-size: 18px; }
+        .powered-by { text-align: center; margin-top: 10px; padding: 10px; color: #6c757d; font-size: 14px; border-top: 1px solid #dee2e6; }
+        .backlinks { text-align: center; margin-top: 15px; }
+        .backlinks a { color: #495057; text-decoration: none; margin: 0 10px; font-size: 14px; transition: color 0.3s ease; font-weight: 600; }
+        .backlinks a:hover { color: #d4edda; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔍 Flip Analyzer</h2>
+        <p>Enter manifest text or upload an image, PDF, Excel, or CSV file for quick resale insights.</p>
+        <textarea id="manifestInput" placeholder="Paste lot details here (e.g., '6 Sony WH1000XM5, untested, $150 bid, Garland TX')..."></textarea>
+        <label for="fileUpload" style="display: block; text-align: center; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; cursor: pointer; color: #6c757d; border: 2px dashed #d4edda;">📁 Upload File (Image, PDF, Excel, CSV - Optional)</label>
+        <input type="file" id="fileUpload" accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display: none;">
+        <button onclick="analyzeFlip()">🚀 Analyze Flip Potential</button>
+        <div id="result"></div>
+        <div class="branding">Powered by Nova Synergy Group LLC</div>
+        <div class="powered-by">Partner Sites:</div>
+        <div class="backlinks">
+            <a href="https://NovaSynergyGroup.com" target="_blank">NovaSynergyGroup.com</a>
+            <a href="https://BeyGlobalVenture.com" target="_blank">BeyGlobalVenture.com</a>
+            <a href="https://MachiningPartner.com" target="_blank">MachiningPartner.com</a>
+            <a href="https://FiendsofPocitelj.org" target="_blank">FiendsofPocitelj.org</a>
+        </div>
+    </div>
+    <script src="flipAnalyzer.js"></script>
+</body>
+</html>
